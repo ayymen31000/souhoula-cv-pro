@@ -96,7 +96,27 @@ function initForm() {
   });
   document.getElementById('print-btn').addEventListener('click', () => {
     updatePreview();
-    window.print();
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    if (isMobile && typeof html2pdf !== 'undefined') {
+      const element = document.getElementById('cv-preview');
+      const opt = {
+        margin:       [5, 5, 5, 5],
+        filename:     'Souhoula_CV.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, windowWidth: 850 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      
+      const printBtn = document.getElementById('print-btn');
+      const originalText = printBtn.innerHTML;
+      printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+      
+      html2pdf().set(opt).from(element).save().then(() => {
+        printBtn.innerHTML = originalText;
+      });
+    } else {
+      window.print();
+    }
   });
 
   // Dark mode toggle
