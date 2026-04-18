@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>souhoula cv dz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <header class="hero">
+      <div class="hero-top">
+        <img class="page-logo" src="AIMEN blanc.png" alt="Aimen Technologie logo">
+        <button id="dark-mode-toggle" class="dark-mode-btn"><i class="fa-solid fa-moon"></i> <span>الوضع
+            المظلم</span></button>
+      </div>
+      <div class="hero-content">
+        <h1>Souhoula CV Pro <i class="fa-solid fa-file-signature"></i></h1>
+        <p>املأ النموذج، ثم اضغط "طباعة" لتحصل على سيرة ذاتية جاهزة للطباعة أو حفظها كملف PDF.</p>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="form-panel">
+        <h2><i class="fa-solid fa-pen-to-square"></i> معلومات السيرة الذاتية</h2>
+        <form id="cv-form">
+          <label><span class="label-arabic"><i class="fa-solid fa-user"></i> الاسم الكامل</span>
+            <span class="label-translation">Nom complet</span>
+            <input type="text" id="name" placeholder="أدخل اسمك الكامل">
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-briefcase"></i> المسمى الوظيفي</span>
+            <span class="label-translation">Intitulé du poste</span>
+            <input type="text" id="title" placeholder="مثال: مطور واجهات مستخدم">
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-language"></i> ترجمة المسمى الوظيفي</span>
+            <span class="label-translation">Traduction du titre</span>
+            <input type="text" id="title-translation" placeholder="مثال: Front-end Developer">
+            <small>أضف ترجمة المسمى الوظيفي لتظهر بجانب العنوان.</small>
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-address-card"></i> المعلومات الشخصية</span>
+            <span class="label-translation">Informations personnelles</span>
+            <textarea id="personal" rows="3" placeholder="مثال: تاريخ الميلاد، الجنسية، العنوان"></textarea>
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-camera"></i> الصورة الشخصية</span>
+            <span class="label-translation">Photo de profil</span>
+            <input type="file" id="photo" accept="image/*">
+            <small>يمكنك تحميل صورة شخصية لتظهر في السيرة الذاتية.</small>
+            <button type="button" id="photo-btn" class="photo-upload-btn"><i class="fa-solid fa-upload"></i> Choisir une
+              photo / اختر صورة</button>
+            <div id="photo-status" class="photo-status"></div>
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-file-lines"></i> ملخص عنك</span>
+            <span class="label-translation">Résumé professionnel</span>
+            <textarea id="summary" rows="4" placeholder="اكتب ملخصاً مهنياً قصيراً"></textarea>
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-graduation-cap"></i> التعليم</span>
+            <span class="label-translation">Formation</span>
+            <textarea id="education" rows="3" placeholder="الجامعة، التخصص، سنوات الدراسة"></textarea>
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-certificate"></i> الشهادات والدبلومات</span>
+            <span class="label-translation">Diplômes & certifications</span>
+            <textarea id="diplomas" rows="3" placeholder="أضف الدبلومات والشهادات التي حصلت عليها"></textarea>
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-building"></i> الخبرات العملية</span>
+            <span class="label-translation">Expériences professionnelles</span>
+            <textarea id="experience" rows="5" placeholder="اكتب الخبرات بترتيب تنازلي، كل بند في سطر جديد"></textarea>
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-star"></i> المهارات</span>
+            <span class="label-translation">Compétences</span>
+            <textarea id="skills" rows="4" placeholder="اكتب مهاراتك الرئيسية مفصولة بفواصل"></textarea>
+          </label>
+          <label><span class="label-arabic"><i class="fa-solid fa-envelope"></i> التواصل</span>
+            <span class="label-translation">Coordonnées</span>
+            <textarea id="contact" rows="3" placeholder="البريد الإلكتروني، رقم الهاتف، LinkedIn"></textarea>
+          </label>
+          <button type="button" id="print-btn" class="print-action-btn"><i class="fa-solid fa-print"></i> طباعة السيرة
+            الذاتية</button>
+        </form>
+      </section>
+
+      <section class="preview-panel">
+        <h2><i class="fa-solid fa-eye"></i> معاينة السيرة الذاتية</h2>
+        <article class="cv-preview" id="cv-preview">
+          <div class="cv-top">
+            <div class="cv-image" id="cv-image">
+              <img id="cv-photo" alt="صورة شخصية" />
+              <div class="photo-placeholder"><i class="fa-solid fa-user-tie fa-3x"></i></div>
+            </div>
+            <div class="cv-header">
+              <h1 id="cv-name"></h1>
+              <p id="cv-title"></p>
+              <p class="cv-title-translation" id="cv-title-translation"></p>
+            </div>
+          </div>
+          <div class="cv-section">
+            <h3><span class="heading-arabic"><i class="fa-solid fa-address-card"></i> المعلومات الشخصية</span> <span
+                class="heading-translation">Informations personnelles</span></h3>
+            <p id="cv-personal"></p>
+          </div>
+          <div class="cv-section">
+            <h3><span class="heading-arabic"><i class="fa-solid fa-file-lines"></i> الملخص</span> <span
+                class="heading-translation">Résumé professionnel</span></h3>
+            <p id="cv-summary"></p>
+          </div>
+          <div class="cv-section">
+            <h3><span class="heading-arabic"><i class="fa-solid fa-graduation-cap"></i> التعليم</span> <span
+                class="heading-translation">Formation</span></h3>
+            <p id="cv-education"></p>
+          </div>
+          <div class="cv-section">
+            <h3><span class="heading-arabic"><i class="fa-solid fa-certificate"></i> الشهادات والدبلومات</span> <span
+                class="heading-translation">Diplômes et certifications</span></h3>
+            <p id="cv-diplomas"></p>
+          </div>
+          <div class="cv-section">
+            <h3><span class="heading-arabic"><i class="fa-solid fa-building"></i> الخبرات العملية</span> <span
+                class="heading-translation">Expériences professionnelles</span></h3>
+            <p id="cv-experience"></p>
+          </div>
+          <div class="cv-section">
+            <h3><span class="heading-arabic"><i class="fa-solid fa-star"></i> المهارات</span> <span
+                class="heading-translation">Compétences</span></h3>
+            <p id="cv-skills"></p>
+          </div>
+          <div class="cv-section">
+            <h3><span class="heading-arabic"><i class="fa-solid fa-envelope"></i> التواصل</span> <span
+                class="heading-translation">Coordonnées</span></h3>
+            <p id="cv-contact"></p>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <footer class="glass-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Aimen Technologie</h3>
+        <p>Création de CV professionnel rapide et efficace.</p>
+      </div>
+      <div class="footer-contact" dir="ltr">
+        <a href="mailto:chebaiki213@gmail.com"><i class="fa-solid fa-envelope"></i> chebaiki213@gmail.com</a>
+        <a href="tel:+213792062181"><i class="fa-solid fa-phone"></i> +213792062181</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Réalisé par Chebaiki Aimen. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
