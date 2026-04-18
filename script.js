@@ -99,8 +99,28 @@ function initForm() {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
     if (isMobile && typeof html2pdf !== 'undefined') {
       window.scrollTo(0, 0); // Very important for html2canvas white-page bug on mobile
-      const element = document.getElementById('cv-preview');
+      const originalPreview = document.getElementById('cv-preview');
       
+      const wrapper = document.createElement('div');
+      wrapper.dir = 'ltr'; 
+      wrapper.style.position = 'absolute';
+      wrapper.style.top = '0';
+      wrapper.style.left = '0';
+      wrapper.style.width = '794px'; 
+      wrapper.style.minHeight = '1122px'; 
+      wrapper.style.padding = '30px'; 
+      wrapper.style.backgroundColor = '#ffffff';
+      wrapper.style.zIndex = '999999';
+      wrapper.style.boxSizing = 'border-box';
+      
+      const clone = originalPreview.cloneNode(true);
+      clone.classList.add('pdf-is-rendering');
+      clone.classList.remove('dark-mode');
+      clone.dir = 'rtl';
+      
+      wrapper.appendChild(clone);
+      document.body.appendChild(wrapper);
+
       const opt = {
         margin:       0,
         filename:     'Souhoula_CV.pdf',
@@ -108,42 +128,9 @@ function initForm() {
         html2canvas:  { 
           scale: 2, 
           useCORS: true, 
-          scrollY: 0, 
-          windowWidth: 794,
-          onclone: (clonedDoc) => {
-            // Apply print layout inside the clone
-            const preview = clonedDoc.getElementById('cv-preview');
-            if (preview) {
-               preview.classList.add('pdf-is-rendering');
-               // Force RTL on the element itself to keep the CV layout correct
-               preview.setAttribute('dir', 'rtl');
-               preview.style.direction = 'rtl';
-            }
-            
-            // Force LTR on root preventing html2canvas RTL right-side clipping bug
-            clonedDoc.documentElement.setAttribute('dir', 'ltr');
-            clonedDoc.body.setAttribute('dir', 'ltr');
-            clonedDoc.documentElement.style.direction = 'ltr';
-            clonedDoc.body.style.direction = 'ltr';
-
-            clonedDoc.documentElement.style.margin = '0';
-            clonedDoc.documentElement.style.padding = '0';
-            clonedDoc.body.style.margin = '0';
-            clonedDoc.body.style.padding = '0';
-            clonedDoc.body.style.width = '794px';
-            clonedDoc.body.style.background = '#ffffff';
-            clonedDoc.body.classList.remove('dark-mode');
-
-            // Reset any parent padding/margins to zero to prevent offset
-            let parent = preview ? preview.parentElement : null;
-            while(parent && parent !== clonedDoc.body) {
-                parent.style.margin = '0';
-                parent.style.padding = '0';
-                parent.style.border = 'none';
-                parent.style.transform = 'none';
-                parent = parent.parentElement;
-            }
-          }
+          scrollY: 0,
+          scrollX: 0,
+          windowWidth: 794
         },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
@@ -152,11 +139,13 @@ function initForm() {
       const originalText = printBtn.innerHTML;
       printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
       
-      html2pdf().set(opt).from(element).save().then(() => {
+      html2pdf().set(opt).from(wrapper).save().then(() => {
         printBtn.innerHTML = originalText;
-      }).catch((err) => {
+        document.body.removeChild(wrapper);
+      }).catch(err => {
         console.error(err);
         printBtn.innerHTML = originalText;
+        document.body.removeChild(wrapper);
       });
     } else {
       window.print();
