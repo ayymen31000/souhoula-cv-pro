@@ -115,7 +115,17 @@ function initForm() {
             const preview = clonedDoc.getElementById('cv-preview');
             if (preview) {
                preview.classList.add('pdf-is-rendering');
+               // Force RTL on the element itself to keep the CV layout correct
+               preview.setAttribute('dir', 'rtl');
+               preview.style.direction = 'rtl';
             }
+            
+            // Force LTR on root preventing html2canvas RTL right-side clipping bug
+            clonedDoc.documentElement.setAttribute('dir', 'ltr');
+            clonedDoc.body.setAttribute('dir', 'ltr');
+            clonedDoc.documentElement.style.direction = 'ltr';
+            clonedDoc.body.style.direction = 'ltr';
+
             clonedDoc.documentElement.style.margin = '0';
             clonedDoc.documentElement.style.padding = '0';
             clonedDoc.body.style.margin = '0';
@@ -123,6 +133,16 @@ function initForm() {
             clonedDoc.body.style.width = '794px';
             clonedDoc.body.style.background = '#ffffff';
             clonedDoc.body.classList.remove('dark-mode');
+
+            // Reset any parent padding/margins to zero to prevent offset
+            let parent = preview ? preview.parentElement : null;
+            while(parent && parent !== clonedDoc.body) {
+                parent.style.margin = '0';
+                parent.style.padding = '0';
+                parent.style.border = 'none';
+                parent.style.transform = 'none';
+                parent = parent.parentElement;
+            }
           }
         },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
