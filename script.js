@@ -98,12 +98,33 @@ function initForm() {
     updatePreview();
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
     if (isMobile && typeof html2pdf !== 'undefined') {
-      const element = document.getElementById('cv-preview');
+      const originalElement = document.getElementById('cv-preview');
+      
+      // Create a temporary container
+      const container = document.createElement('div');
+      container.className = `pdf-container ${originalElement.dir === 'ltr' ? 'lang-ltr' : 'lang-rtl'}`;
+      container.dir = originalElement.dir;
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      container.style.top = '0';
+      
+      // Clone the element so we don't modify the visible UI
+      const clone = originalElement.cloneNode(true);
+      clone.classList.remove('dark-mode');
+      
+      container.appendChild(clone);
+      document.body.appendChild(container);
+
       const opt = {
-        margin:       [5, 5, 5, 5],
+        margin:       0,
         filename:     'Souhoula_CV.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, windowWidth: 850 },
+        html2canvas:  { 
+          scale: 2, 
+          useCORS: true, 
+          scrollY: 0, 
+          windowWidth: 800 
+        },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
       
@@ -111,8 +132,13 @@ function initForm() {
       const originalText = printBtn.innerHTML;
       printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
       
-      html2pdf().set(opt).from(element).save().then(() => {
+      html2pdf().set(opt).from(container).save().then(() => {
         printBtn.innerHTML = originalText;
+        document.body.removeChild(container);
+      }).catch(err => {
+        console.error(err);
+        printBtn.innerHTML = originalText;
+        document.body.removeChild(container);
       });
     } else {
       window.print();

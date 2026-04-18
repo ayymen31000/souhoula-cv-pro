@@ -845,3 +845,108 @@ footer.glass-footer {
     justify-content: center;
   }
 }
+
+/* Styles applied to the temporary container for html2pdf generation */
+.pdf-container {
+  width: 210mm !important;
+  background: #ffffff !important;
+  padding: 10mm !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  color: #102a43 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  direction: inherit;
+}
+
+.pdf-container .cv-preview {
+  border: 1px solid #102a43 !important;
+  box-shadow: none !important;
+  background: #ffffff !important;
+  width: 100% !important;
+  max-width: none !important;
+  padding: 10mm !important;
+  border-radius: 0 !important;
+}
+
+.pdf-container .cv-preview::before,
+.pdf-container .cv-preview > h2 {
+  display: none !important;
+}
+
+.pdf-container .cv-top {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 0 !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(16, 42, 67, 0.16) !important;
+  background: transparent !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0 !important;
+}
+
+.pdf-container .cv-section {
+  margin-top: 12px !important;
+  padding: 12px !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.pdf-container .cv-section h3 {
+  margin-bottom: 8px !important;
+  color: #102a43 !important;
+  padding: 3px 6px !important;
+  background: rgba(16, 42, 67, 0.08) !important;
+  border-radius: 6px !important;
+  display: inline-block !important;
+}
+
+.pdf-container .cv-section h3::before {
+  display: none !important;
+}
+
+.pdf-container .cv-section p {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  color: #102a43 !important;
+  line-height: 1.4 !important;
+  font-size: 10pt !important;
+}
+
+.pdf-container .cv-image {
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(16, 42, 67, 0.16) !important;
+  width: 130px !important;
+  height: 130px !important;
+}
+
+.pdf-container .cv-header {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  text-align: center !important;
+}
+
+.pdf-container .cv-header h1 {
+  font-size: 1.8rem !important;
+  color: #102a43 !important;
+}
+
+.pdf-container p, .pdf-container h1, .pdf-container h2, .pdf-container h3, .pdf-container span {
+  color: #102a43 !important;
+}
+
+.pdf-container.lang-ltr .heading-arabic,
+.pdf-container.lang-ltr .label-arabic {
+  display: none !important;
+}
+
+.pdf-container.lang-rtl .heading-translation,
+.pdf-container.lang-rtl .label-translation {
+  display: none !important;
+}
