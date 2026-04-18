@@ -170,6 +170,13 @@ function initForm() {
       // Wait 1.5 seconds for CSS & Fonts to fully load in the iframe before capturing
       setTimeout(() => {
         const targetElement = doc.getElementById('pdf-wrapper');
+        const widthPx = targetElement.offsetWidth || 794;
+        const heightPx = targetElement.offsetHeight;
+        
+        // Calculate proportional height in millimeters based on standard A4 width (210mm)
+        const ratio = 210 / widthPx;
+        const heightMm = Math.max(297, heightPx * ratio);
+
         const opt = {
           margin:       0,
           filename:     'Souhoula_CV.pdf',
@@ -182,7 +189,7 @@ function initForm() {
             y: 0,
             windowWidth: 794
           },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          jsPDF:        { unit: 'mm', format: [210, heightMm], orientation: 'portrait' }
         };
         
         html2pdf().set(opt).from(targetElement).save().then(() => {
