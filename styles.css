@@ -848,15 +848,16 @@ footer.glass-footer {
 
 /* Print optimization for html2pdf via onclone */
 .pdf-is-rendering {
-  border: 1px solid transparent !important;
+  border: none !important;
   box-shadow: none !important;
   background: #ffffff !important;
   width: 100% !important;
-  max-width: 190mm !important;
-  margin: 0 auto !important;
-  padding: 10mm !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 40px !important;
   border-radius: 0 !important;
   color: #102a43 !important;
+  box-sizing: border-box !important;
 }
 
 .pdf-is-rendering::before,

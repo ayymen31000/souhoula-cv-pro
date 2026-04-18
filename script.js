@@ -116,6 +116,11 @@ function initForm() {
             if (preview) {
                preview.classList.add('pdf-is-rendering');
             }
+            clonedDoc.documentElement.style.margin = '0';
+            clonedDoc.documentElement.style.padding = '0';
+            clonedDoc.body.style.margin = '0';
+            clonedDoc.body.style.padding = '0';
+            clonedDoc.body.style.width = '794px';
             clonedDoc.body.style.background = '#ffffff';
             clonedDoc.body.classList.remove('dark-mode');
           }
