@@ -96,60 +96,7 @@ function initForm() {
   });
   document.getElementById('print-btn').addEventListener('click', () => {
     updatePreview();
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-    if (isMobile && typeof html2pdf !== 'undefined') {
-      window.scrollTo(0, 0); // Very important for html2canvas white-page bug on mobile
-      const originalPreview = document.getElementById('cv-preview');
-      
-      const wrapper = document.createElement('div');
-      wrapper.dir = 'ltr'; 
-      wrapper.style.position = 'absolute';
-      wrapper.style.top = '0';
-      wrapper.style.left = '0';
-      wrapper.style.width = '794px'; 
-      wrapper.style.minHeight = '1122px'; 
-      wrapper.style.padding = '30px'; 
-      wrapper.style.backgroundColor = '#ffffff';
-      wrapper.style.zIndex = '999999';
-      wrapper.style.boxSizing = 'border-box';
-      
-      const clone = originalPreview.cloneNode(true);
-      clone.classList.add('pdf-is-rendering');
-      clone.classList.remove('dark-mode');
-      clone.dir = 'rtl';
-      
-      wrapper.appendChild(clone);
-      document.body.appendChild(wrapper);
-
-      const opt = {
-        margin:       0,
-        filename:     'Souhoula_CV.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-          scale: 2, 
-          useCORS: true, 
-          scrollY: 0,
-          scrollX: 0,
-          windowWidth: 794
-        },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-      
-      const printBtn = document.getElementById('print-btn');
-      const originalText = printBtn.innerHTML;
-      printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
-      
-      html2pdf().set(opt).from(wrapper).save().then(() => {
-        printBtn.innerHTML = originalText;
-        document.body.removeChild(wrapper);
-      }).catch(err => {
-        console.error(err);
-        printBtn.innerHTML = originalText;
-        document.body.removeChild(wrapper);
-      });
-    } else {
-      window.print();
-    }
+    window.print();
   });
 
   // Dark mode toggle
