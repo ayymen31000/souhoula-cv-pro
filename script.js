@@ -98,23 +98,9 @@ function initForm() {
     updatePreview();
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
     if (isMobile && typeof html2pdf !== 'undefined') {
-      const originalElement = document.getElementById('cv-preview');
+      window.scrollTo(0, 0); // Very important for html2canvas white-page bug on mobile
+      const element = document.getElementById('cv-preview');
       
-      // Create a temporary container
-      const container = document.createElement('div');
-      container.className = `pdf-container ${originalElement.dir === 'ltr' ? 'lang-ltr' : 'lang-rtl'}`;
-      container.dir = originalElement.dir;
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      container.style.top = '0';
-      
-      // Clone the element so we don't modify the visible UI
-      const clone = originalElement.cloneNode(true);
-      clone.classList.remove('dark-mode');
-      
-      container.appendChild(clone);
-      document.body.appendChild(container);
-
       const opt = {
         margin:       0,
         filename:     'Souhoula_CV.pdf',
@@ -123,7 +109,16 @@ function initForm() {
           scale: 2, 
           useCORS: true, 
           scrollY: 0, 
-          windowWidth: 800 
+          windowWidth: 794,
+          onclone: (clonedDoc) => {
+            // Apply print layout inside the clone
+            const preview = clonedDoc.getElementById('cv-preview');
+            if (preview) {
+               preview.classList.add('pdf-is-rendering');
+            }
+            clonedDoc.body.style.background = '#ffffff';
+            clonedDoc.body.classList.remove('dark-mode');
+          }
         },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
@@ -132,13 +127,11 @@ function initForm() {
       const originalText = printBtn.innerHTML;
       printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
       
-      html2pdf().set(opt).from(container).save().then(() => {
+      html2pdf().set(opt).from(element).save().then(() => {
         printBtn.innerHTML = originalText;
-        document.body.removeChild(container);
-      }).catch(err => {
+      }).catch((err) => {
         console.error(err);
         printBtn.innerHTML = originalText;
-        document.body.removeChild(container);
       });
     } else {
       window.print();
