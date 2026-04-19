@@ -97,7 +97,7 @@ function initForm() {
   document.getElementById('print-btn').addEventListener('click', () => {
     updatePreview();
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-    if (isMobile && typeof html2pdf !== 'undefined') {
+    if (isMobile && typeof html2canvas !== 'undefined' && typeof window.jspdf !== 'undefined') {
       const printBtn = document.getElementById('print-btn');
       const originalText = printBtn.innerHTML;
       printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
