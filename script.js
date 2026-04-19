@@ -170,29 +170,43 @@ function initForm() {
       // Wait 1.5 seconds for CSS & Fonts to fully load in the iframe before capturing
       setTimeout(() => {
         const targetElement = doc.getElementById('pdf-wrapper');
-        const widthPx = targetElement.offsetWidth || 794;
-        const heightPx = targetElement.offsetHeight;
         
-        // Calculate proportional height in millimeters based on standard A4 width (210mm)
-        const ratio = 210 / widthPx;
-        const heightMm = Math.max(297, heightPx * ratio);
-
-        const opt = {
-          margin:       0,
-          filename:     'Souhoula_CV.pdf',
-          image:        { type: 'jpeg', quality: 1 },
-          html2canvas:  { 
-            scale: 2, 
-            useCORS: true, 
-            scrollY: 0,
-            x: 0,
-            y: 0,
-            windowWidth: 794
-          },
-          jsPDF:        { unit: 'mm', format: [210, heightMm], orientation: 'portrait' }
-        };
-        
-        html2pdf().set(opt).from(targetElement).save().then(() => {
+        // 1. Generate Canvas precisely
+        html2canvas(targetElement, {
+          scale: 2,
+          useCORS: true,
+          scrollY: 0,
+          scrollX: 0,
+          windowWidth: 794,
+          logging: false
+        }).then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          
+          // 2. Build the exact single-page PDF
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
+          const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+          
+          const canvasRatio = canvas.height / canvas.width;
+          const pdfRatio = pdfHeight / pdfWidth;
+          
+          let finalWidth = pdfWidth;
+          let finalHeight = finalWidth * canvasRatio;
+          
+          // If the CV is taller than an A4 paper, shrink it to fit strictly inside 1 page!
+          if (canvasRatio > pdfRatio) {
+            finalHeight = pdfHeight;
+            finalWidth = finalHeight / canvasRatio;
+          }
+          
+          // Perfectly center the CV horizontally and vertically 
+          const x = Math.max(0, (pdfWidth - finalWidth) / 2);
+          const y = Math.max(0, (pdfHeight - finalHeight) / 2);
+          
+          pdf.addImage(imgData, 'JPEG', x, y, finalWidth, finalHeight);
+          pdf.save('Souhoula_CV.pdf');
+          
           printBtn.innerHTML = originalText;
           document.body.removeChild(iframe);
         }).catch(err => {
