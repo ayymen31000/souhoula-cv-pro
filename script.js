@@ -96,128 +96,57 @@ function initForm() {
   });
   document.getElementById('print-btn').addEventListener('click', () => {
     updatePreview();
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-    if (isMobile && typeof html2canvas !== 'undefined' && typeof window.jspdf !== 'undefined') {
-      const printBtn = document.getElementById('print-btn');
-      const originalText = printBtn.innerHTML;
-      printBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
-
-      // Capture original state
-      const originalPreview = document.getElementById('cv-preview');
-      const cvDir = originalPreview.dir || 'rtl';
-      
-      // Create isolated iframe specifically sized to Desktop A4
-      const iframe = document.createElement('iframe');
-      iframe.style.position = 'absolute';
-      iframe.style.top = '-9999px';
-      iframe.style.width = '794px';
-      iframe.style.height = '1122px';
-      document.body.appendChild(iframe);
-
-      const doc = iframe.contentWindow.document;
-      doc.open();
-      
-      // Inject the CV inside a perfectly constrained A4 div
-      doc.write(`
-        <!DOCTYPE html>
-        <html lang="ar" dir="${cvDir}">
-        <head>
-          <meta charset="UTF-8">
-          <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-          <link rel="stylesheet" href="${window.location.origin}/styles.css">
-          <style>
-            body { background: #ffffff; padding: 0; margin: 0; }
-            /* Exact PC Print Replicas */
-            .cv-preview {
-              border: 1px solid #102a43 !important;
-              box-shadow: none !important;
-              background: #ffffff !important;
-              margin: 0 auto !important;
-              border-radius: 0 !important;
-            }
-            .cv-preview::before, .cv-preview > h2 { display: none !important; }
-            .cv-top {
-              border-bottom: 1px solid rgba(16, 42, 67, 0.16) !important;
-              background: transparent !important;
-              justify-content: center !important;
-              border-radius: 0 !important;
-              padding-bottom: 12px !important;
-            }
-            .cv-section { background: transparent !important; border: none !important; margin-top: 12px !important; padding: 12px !important; }
-            .cv-section h3 { background: rgba(16, 42, 67, 0.08) !important; padding: 3px 6px !important; border-radius: 6px !important; color: #102a43 !important; display: inline-block !important; margin-bottom: 8px !important; }
-            .cv-section h3::before { display: none !important; }
-            .cv-section p { background: transparent !important; border: none !important; padding: 0 !important; color: #102a43 !important; font-size: 10pt !important; line-height: 1.4 !important; }
-            p, h1, h2, h3, span { color: #102a43 !important; }
-            .cv-image { border: 1px solid rgba(16, 42, 67, 0.16) !important; background: transparent !important; box-shadow: none !important; width: 130px !important; height: 130px !important; border-radius: 16px !important; }
-            .cv-header { border-bottom: none !important; padding-bottom: 0 !important; text-align: center !important; }
-            .cv-header h1 { font-size: 1.8rem !important; }
-            
-            /* Language hiding for translations */
-            .cv-preview.lang-ltr .heading-arabic, .cv-preview.lang-ltr .label-arabic { display: none !important; }
-            .cv-preview.lang-rtl .heading-translation, .cv-preview.lang-rtl .label-translation { display: none !important; }
-          </style>
-        </head>
-        <body>
-          <div id="pdf-wrapper" style="width: 210mm; min-height: 297mm; padding: 10mm; box-sizing: border-box; margin: 0 auto; background: white; direction: ${cvDir};">
-             ${originalPreview.outerHTML}
-          </div>
-        </body>
-        </html>
-      `);
-      doc.close();
-
-      // Wait 1.5 seconds for CSS & Fonts to fully load in the iframe before capturing
-      setTimeout(() => {
-        const targetElement = doc.getElementById('pdf-wrapper');
-        
-        // 1. Generate Canvas precisely
-        html2canvas(targetElement, {
-          scale: 2,
-          useCORS: true,
-          scrollY: 0,
-          scrollX: 0,
-          windowWidth: 794,
-          logging: false
-        }).then(canvas => {
-          const imgData = canvas.toDataURL('image/jpeg', 1.0);
-          
-          // 2. Build the exact single-page PDF
-          const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
-          const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
-          
-          const canvasRatio = canvas.height / canvas.width;
-          const pdfRatio = pdfHeight / pdfWidth;
-          
-          let finalWidth = pdfWidth;
-          let finalHeight = finalWidth * canvasRatio;
-          
-          // If the CV is taller than an A4 paper, shrink it to fit strictly inside 1 page!
-          if (canvasRatio > pdfRatio) {
-            finalHeight = pdfHeight;
-            finalWidth = finalHeight / canvasRatio;
-          }
-          
-          // Perfectly center the CV horizontally and vertically 
-          const x = Math.max(0, (pdfWidth - finalWidth) / 2);
-          const y = Math.max(0, (pdfHeight - finalHeight) / 2);
-          
-          pdf.addImage(imgData, 'JPEG', x, y, finalWidth, finalHeight);
-          pdf.save('Souhoula_CV.pdf');
-          
-          printBtn.innerHTML = originalText;
-          document.body.removeChild(iframe);
-        }).catch(err => {
-          console.error(err);
-          printBtn.innerHTML = originalText;
-          document.body.removeChild(iframe);
-        });
-      }, 1500);
-    } else {
-      window.print();
+    const cvPreview = document.getElementById('cv-preview');
+    
+    // Create a temporary hidden clone strictly dimensioned as the A4 print canvas 
+    // to measure how tall the content actually renders.
+    const measureDiv = document.createElement('div');
+    measureDiv.style.position = 'absolute';
+    measureDiv.style.visibility = 'hidden';
+    measureDiv.style.width = '190mm'; // The exact max-width from @media print CSS
+    measureDiv.style.padding = '10mm';
+    measureDiv.style.boxSizing = 'border-box';
+    measureDiv.style.left = '-9999px';
+    
+    const clone = cvPreview.cloneNode(true);
+    // Strip display properties that might distort measurement
+    clone.style.width = '100%'; 
+    clone.style.margin = '0';
+    clone.style.boxShadow = 'none';
+    
+    measureDiv.appendChild(clone);
+    document.body.appendChild(measureDiv);
+    
+    const actualHeight = clone.scrollHeight;
+    let scale = 1;
+    // Roughly 1050px is the safe maximum height of an A4 print sheet minus margins at 96dpi.
+    const maxHeight = 1050;
+    
+    if (actualHeight > maxHeight) {
+        // Dynamically shrink it purely for fitting it onto a single sheet of paper
+        scale = maxHeight / actualHeight;
     }
+    
+    document.body.removeChild(measureDiv);
+    
+    // Apply the scaling temporarily immediately before popping the print dialog
+    cvPreview.style.zoom = scale;
+    if (scale < 1) {
+        // Fallback for browsers that ignore CSS zoom (Firefox etc)
+        cvPreview.style.transform = `scale(${scale})`;
+        cvPreview.style.transformOrigin = 'top center';
+    }
+    
+    // Allow the browser render thread to apply the zoom before triggering the dialog
+    setTimeout(() => {
+      window.print();
+      
+      // Immediately un-zoom after the print dialog resolves to restore on-screen layout
+      setTimeout(() => {
+          cvPreview.style.zoom = '1';
+          cvPreview.style.transform = 'none';
+      }, 500);
+    }, 100);
   });
 
   // Dark mode toggle
