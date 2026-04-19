@@ -72,13 +72,13 @@ function handlePhotoUpload() {
     const imageUrl = URL.createObjectURL(file);
     photoPreview.src = imageUrl;
     photoBox.classList.add('has-photo');
-    
+
     photoStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Photo ajoutée avec succès / تم إضافة الصورة بنجاح';
     photoStatus.classList.add('show');
   } else {
     photoPreview.src = '';
     photoBox.classList.remove('has-photo');
-    
+
     photoStatus.innerHTML = '';
     photoStatus.classList.remove('show');
   }
@@ -97,7 +97,7 @@ function initForm() {
   document.getElementById('print-btn').addEventListener('click', () => {
     updatePreview();
     const cvPreview = document.getElementById('cv-preview');
-    
+
     // Create a temporary hidden clone strictly dimensioned as the A4 print canvas 
     // to measure how tall the content actually renders.
     const measureDiv = document.createElement('div');
@@ -107,16 +107,16 @@ function initForm() {
     measureDiv.style.padding = '10mm';
     measureDiv.style.boxSizing = 'border-box';
     measureDiv.style.left = '-9999px';
-    
+
     const clone = cvPreview.cloneNode(true);
     // Strip display properties that might distort measurement
-    clone.style.width = '100%'; 
+    clone.style.width = '100%';
     clone.style.margin = '0';
     clone.style.boxShadow = 'none';
-    
+
     measureDiv.appendChild(clone);
     document.body.appendChild(measureDiv);
-    
+
     const actualHeight = clone.scrollHeight;
     document.body.removeChild(measureDiv);
     
@@ -124,7 +124,7 @@ function initForm() {
     // If it's too big, we apply smart CSS classes to shrink the font specifically without altering the paper layout!
     cvPreview.classList.remove('print-compact', 'print-ultra-compact');
     
-    if (actualHeight > 1400) {
+    if (actualHeight > 1350) {
         cvPreview.classList.add('print-ultra-compact');
     } else if (actualHeight > 1050) {
         cvPreview.classList.add('print-compact');
@@ -133,10 +133,10 @@ function initForm() {
     // Allow the browser render thread to apply the classes before triggering the dialog
     setTimeout(() => {
       window.print();
-      
-      // Immediately remove compact classes after print dialog to restore normal screen view
+
+      // Immediately return classes to normal after print dialog closes
       setTimeout(() => {
-          cvPreview.classList.remove('print-compact', 'print-ultra-compact');
+        cvPreview.classList.remove('print-compact', 'print-ultra-compact');
       }, 500);
     }, 100);
   });
@@ -158,17 +158,17 @@ function initForm() {
 function toggleDarkMode() {
   document.body.classList.toggle('dark-mode');
   const isDarkMode = document.body.classList.contains('dark-mode');
-  
+
   // Save theme preference
   localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-  
+
   updateDarkModeButton();
 }
 
 function updateDarkModeButton() {
   const darkModeToggle = document.getElementById('dark-mode-toggle');
   const isDarkMode = document.body.classList.contains('dark-mode');
-  
+
   if (isDarkMode) {
     darkModeToggle.textContent = '☀️ الوضع الفاتح';
     darkModeToggle.setAttribute('aria-label', 'Switch to light mode');
