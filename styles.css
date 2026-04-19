@@ -836,7 +836,7 @@ footer.glass-footer {
   border-top-color: rgba(255, 255, 255, 0.05);
 }
 
-@media (max-width: 960px) {
+@media screen and (max-width: 960px) {
   .content {
     grid-template-columns: 1fr;
   }
