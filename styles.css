@@ -469,14 +469,16 @@ button i {
 
   html,
   body {
-    width: auto !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
     background: #ffffff !important;
     margin: 0 auto !important;
-    padding: 8mm !important;
+    padding: 0 !important;
     color: #102a43;
     min-height: auto;
     font-size: 10pt;
-    font-family: Arial, Helvetica, sans-serif !important; /* ✅ AJOUTÉ : évite les fff/ggg */
+    font-family: Arial, Helvetica, sans-serif !important;
   }
 
   .container,
@@ -500,7 +502,7 @@ button i {
 
   .preview-panel {
     width: 100% !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     padding: 0 !important;
     border: none !important;
     display: block !important;
@@ -516,11 +518,12 @@ button i {
     border: 1px solid #102a43 !important;
     box-shadow: none !important;
     background: #ffffff !important;
-    width: calc(100% - 20mm) !important;
-    max-width: 190mm !important;
-    margin: 0 auto !important;
-    height: auto !important;        /* ✅ AJOUTÉ : hauteur naturelle */
-    overflow: visible !important;   /* ✅ AJOUTÉ : rien ne se coupe */
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    height: auto !important;
+    overflow: visible !important;
     page-break-after: auto !important;
   }
 
