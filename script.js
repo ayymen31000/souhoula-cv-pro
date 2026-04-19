@@ -118,33 +118,25 @@ function initForm() {
     document.body.appendChild(measureDiv);
     
     const actualHeight = clone.scrollHeight;
-    let scale = 1;
-    // Roughly 1050px is the safe maximum height of an A4 print sheet minus margins at 96dpi.
-    const maxHeight = 1050;
-    
-    if (actualHeight > maxHeight) {
-        // Dynamically shrink it purely for fitting it onto a single sheet of paper
-        scale = maxHeight / actualHeight;
-    }
-    
     document.body.removeChild(measureDiv);
     
-    // Apply the scaling temporarily immediately before popping the print dialog
-    cvPreview.style.zoom = scale;
-    if (scale < 1) {
-        // Fallback for browsers that ignore CSS zoom (Firefox etc)
-        cvPreview.style.transform = `scale(${scale})`;
-        cvPreview.style.transformOrigin = 'top center';
+    // Roughly 1050px is the safe maximum height of an A4 print sheet minus margins at 96dpi.
+    // If it's too big, we apply smart CSS classes to shrink the font specifically without altering the paper layout!
+    cvPreview.classList.remove('print-compact', 'print-ultra-compact');
+    
+    if (actualHeight > 1400) {
+        cvPreview.classList.add('print-ultra-compact');
+    } else if (actualHeight > 1050) {
+        cvPreview.classList.add('print-compact');
     }
     
-    // Allow the browser render thread to apply the zoom before triggering the dialog
+    // Allow the browser render thread to apply the classes before triggering the dialog
     setTimeout(() => {
       window.print();
       
-      // Immediately un-zoom after the print dialog resolves to restore on-screen layout
+      // Immediately remove compact classes after print dialog to restore normal screen view
       setTimeout(() => {
-          cvPreview.style.zoom = '1';
-          cvPreview.style.transform = 'none';
+          cvPreview.classList.remove('print-compact', 'print-ultra-compact');
       }, 500);
     }, 100);
   });
