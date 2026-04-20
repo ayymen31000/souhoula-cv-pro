@@ -1,186 +1,115 @@
-const fields = [
-  { id: 'name', target: 'cv-name' },
-  { id: 'title', target: 'cv-title' },
-  { id: 'title-translation', target: 'cv-title-translation' },
-  { id: 'personal', target: 'cv-personal' },
-  { id: 'summary', target: 'cv-summary' },
-  { id: 'education', target: 'cv-education' },
-  { id: 'diplomas', target: 'cv-diplomas' },
-  { id: 'experience', target: 'cv-experience' },
-  { id: 'skills', target: 'cv-skills' },
-  { id: 'contact', target: 'cv-contact' },
-];
+  // ── FIELDS MAP ──
+  const FIELDS = [
+    { inp: 'inp-personal',  out: 'cv-personal',  sec: 'sec-personal' },
+    { inp: 'inp-summary',   out: 'cv-summary',   sec: 'sec-summary' },
+    { inp: 'inp-education', out: 'cv-education', sec: 'sec-education' },
+    { inp: 'inp-diplomas',  out: 'cv-diplomas',  sec: 'sec-diplomas' },
+    { inp: 'inp-experience',out: 'cv-experience',sec: 'sec-experience' },
+    { inp: 'inp-skills',    out: 'cv-skills',    sec: 'sec-skills' },
+    { inp: 'inp-contact',   out: 'cv-contact',   sec: 'sec-contact' },
+  ];
 
-function isArabicText(value) {
-  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(value);
-}
+  function isArabic(str) {
+    return /[\u0600-\u06FF]/.test(str);
+  }
 
-function getDirectionFromText() {
-  const inputs = ['name', 'title', 'summary', 'personal', 'experience', 'education', 'diplomas', 'skills', 'contact'];
-  let hasArabic = false;
-  let hasLatin = false;
-
-  inputs.forEach((id) => {
-    const value = document.getElementById(id)?.value || '';
-    if (isArabicText(value)) {
-      hasArabic = true;
-    }
-    if (/[A-Za-z]/.test(value)) {
-      hasLatin = true;
-    }
-  });
-
-  if (hasArabic && !hasLatin) {
+  function getDir() {
+    const vals = ['inp-name','inp-title','inp-summary','inp-experience']
+      .map(id => document.getElementById(id)?.value || '').join(' ');
+    const hasAr = isArabic(vals);
+    const hasLat = /[A-Za-z]/.test(vals);
+    if (hasAr && !hasLat) return 'rtl';
+    if (hasLat && !hasAr) return 'ltr';
     return 'rtl';
   }
-  if (hasLatin && !hasArabic) {
-    return 'ltr';
+
+  function update() {
+    // Name
+    const name = document.getElementById('inp-name').value.trim();
+    document.getElementById('cv-name').textContent = name || 'اسمك الكامل';
+
+    // Title
+    const title = document.getElementById('inp-title').value.trim();
+    const titleEl = document.getElementById('cv-title');
+    titleEl.textContent = title;
+    titleEl.style.display = title ? 'inline-block' : 'none';
+
+    // Title translation
+    const titleTr = document.getElementById('inp-title-tr').value.trim();
+    const titleTrEl = document.getElementById('cv-title-tr');
+    titleTrEl.textContent = titleTr;
+    titleTrEl.style.display = titleTr ? 'block' : 'none';
+
+    // Sections
+    FIELDS.forEach(({ inp, out, sec }) => {
+      const val = document.getElementById(inp).value.trim();
+      document.getElementById(out).textContent = val;
+      const secEl = document.getElementById(sec);
+      if (val) secEl.classList.add('visible');
+      else secEl.classList.remove('visible');
+    });
+
+    // Direction
+    const dir = getDir();
+    const doc = document.getElementById('cv-doc');
+    doc.dir = dir;
   }
-  return 'rtl';
-}
 
-function updatePreview() {
-  fields.forEach(({ id, target }) => {
-    const input = document.getElementById(id);
-    const preview = document.getElementById(target);
-    const value = input.value.trim();
-    preview.textContent = value;
-
-    const section = preview.closest('.cv-section');
-    if (section) {
-      section.style.display = value ? '' : 'none';
-    }
-
-    preview.style.display = value ? '' : 'none';
-  });
-
-  const preview = document.getElementById('cv-preview');
-  const direction = getDirectionFromText();
-  preview.dir = direction;
-  preview.classList.remove('lang-ltr', 'lang-rtl');
-  preview.classList.add(`lang-${direction}`);
-}
-
-function handlePhotoUpload() {
-  const photoInput = document.getElementById('photo');
-  const photoPreview = document.getElementById('cv-photo');
-  const photoBox = document.getElementById('cv-image');
-  const photoStatus = document.getElementById('photo-status');
-  const file = photoInput.files[0];
-
-  if (file && file.type.startsWith('image/')) {
-    const imageUrl = URL.createObjectURL(file);
-    photoPreview.src = imageUrl;
-    photoBox.classList.add('has-photo');
-
-    photoStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Photo ajoutée avec succès / تم إضافة الصورة بنجاح';
-    photoStatus.classList.add('show');
-  } else {
-    photoPreview.src = '';
-    photoBox.classList.remove('has-photo');
-
-    photoStatus.innerHTML = '';
-    photoStatus.classList.remove('show');
-  }
-}
-
-function initForm() {
-  fields.forEach(({ id }) => {
-    const input = document.getElementById(id);
-    input.addEventListener('input', updatePreview);
-  });
-
-  document.getElementById('photo').addEventListener('change', handlePhotoUpload);
+  // ── PHOTO ──
   document.getElementById('photo-btn').addEventListener('click', () => {
-    document.getElementById('photo').click();
+    document.getElementById('inp-photo').click();
   });
-  document.getElementById('print-btn').addEventListener('click', () => {
-    updatePreview();
-    // Render exactly like PC 100% unconditionally across all devices
+
+  document.getElementById('inp-photo').addEventListener('change', function() {
+    const file = this.files[0];
+    const wrap = document.getElementById('cv-photo-wrap');
+    const img = document.getElementById('cv-photo-img');
+    const status = document.getElementById('photo-status');
+
+    if (file && file.type.startsWith('image/')) {
+      img.src = URL.createObjectURL(file);
+      wrap.classList.add('has-photo');
+      status.classList.add('show');
+    } else {
+      img.src = '';
+      wrap.classList.remove('has-photo');
+      status.classList.remove('show');
+    }
+  });
+
+  // ── INPUT LISTENERS ──
+  ['inp-name','inp-title','inp-title-tr'].forEach(id => {
+    document.getElementById(id).addEventListener('input', update);
+  });
+  FIELDS.forEach(({ inp }) => {
+    document.getElementById(inp).addEventListener('input', update);
+  });
+
+  // ── PRINT ──
+  function doPrint() {
+    update();
     window.print();
+  }
+
+  document.getElementById('print-btn').addEventListener('click', doPrint);
+  document.getElementById('print-btn-top').addEventListener('click', doPrint);
+
+  // ── DARK MODE ──
+  const darkBtn = document.getElementById('dark-toggle');
+  function applyDark(on) {
+    document.documentElement.classList.toggle('dark', on);
+    document.body.classList.toggle('dark', on); // kept for compat
+    darkBtn.querySelector('span').textContent = on ? 'الوضع الفاتح' : 'الوضع المظلم';
+    darkBtn.textContent = '';
+    darkBtn.innerHTML = on ? '☀️ <span>الوضع الفاتح</span>' : '🌙 <span>الوضع المظلم</span>';
+    localStorage.setItem('cvTheme', on ? 'dark' : 'light');
+  }
+
+  darkBtn.addEventListener('click', () => {
+    applyDark(!document.documentElement.classList.contains('dark'));
   });
 
-  // Dark mode toggle
-  const darkModeToggle = document.getElementById('dark-mode-toggle');
-  darkModeToggle.addEventListener('click', toggleDarkMode);
+  if (localStorage.getItem('cvTheme') === 'dark') applyDark(true);
 
-  // Check for saved theme preference or default to light mode
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-mode');
-    updateDarkModeButton();
-  }
-
-  updatePreview();
-}
-
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-  const isDarkMode = document.body.classList.contains('dark-mode');
-
-  // Save theme preference
-  localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-
-  updateDarkModeButton();
-}
-
-function updateDarkModeButton() {
-  const darkModeToggle = document.getElementById('dark-mode-toggle');
-  const isDarkMode = document.body.classList.contains('dark-mode');
-
-  if (isDarkMode) {
-    darkModeToggle.textContent = '☀️ الوضع الفاتح';
-    darkModeToggle.setAttribute('aria-label', 'Switch to light mode');
-  } else {
-    darkModeToggle.textContent = '🌙 الوضع المظلم';
-    darkModeToggle.setAttribute('aria-label', 'Switch to dark mode');
-  }
-}
-
-function handlePrintScale() {
-  const preview = document.getElementById('cv-preview');
-  if (!preview) return;
-
-  // Réinitialiser l'échelle
-  preview.style.transform = 'none';
-  preview.style.marginBottom = '0';
-  preview.style.transformOrigin = 'top center';
-
-  // Forcer format A4 pour calculer la hauteur exacte
-  const origWidth = preview.style.width;
-  const origPosition = preview.style.position;
-  const origMaxW = preview.style.maxWidth;
-
-  preview.style.width = '210mm';
-  preview.style.maxWidth = '210mm';
-  preview.style.position = 'absolute';
-
-  // ~1123px est la hauteur d'un A4 à 96 DPI, on utilise 1050px pour assurer les marges d'impression du navigateur
-  const maxA4HeightPx = 1050; 
-  const currentHeight = preview.offsetHeight;
-
-  // Transformer avec scale si c'est plus grand
-  if (currentHeight > maxA4HeightPx) {
-    const scale = maxA4HeightPx / currentHeight;
-    preview.style.transform = `scale(${scale})`;
-    // Soustraire la hauteur physique résultante libérée pour éviter des pages blanches inutiles
-    preview.style.marginBottom = `-${currentHeight * (1 - scale)}px`;
-  }
-
-  // Restaurer propriétés
-  preview.style.width = origWidth;
-  preview.style.maxWidth = origMaxW;
-  preview.style.position = origPosition;
-}
-
-function resetPrintScale() {
-  const preview = document.getElementById('cv-preview');
-  if (!preview) return;
-  preview.style.transform = 'none';
-  preview.style.marginBottom = '0';
-}
-
-window.addEventListener('beforeprint', handlePrintScale);
-window.addEventListener('afterprint', resetPrintScale);
-
-document.addEventListener('DOMContentLoaded', initForm);
+  // ── INIT ──
+  update();

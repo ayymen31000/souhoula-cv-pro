@@ -15,130 +15,265 @@
 </head>
 
 <body>
-  <div class="container">
-    <header class="hero">
-      <div class="hero-top">
-        <img class="page-logo" src="AIMEN blanc.png" alt="Aimen Technologie logo">
-        <button id="dark-mode-toggle" class="dark-mode-btn"><i class="fa-solid fa-moon"></i> <span>الوضع
-            المظلم</span></button>
-      </div>
-      <div class="hero-content">
-        <h1>Souhoula CV Pro <i class="fa-solid fa-file-signature"></i></h1>
-        <p>املأ النموذج، ثم اضغط "طباعة" لتحصل على سيرة ذاتية جاهزة للطباعة أو حفظها كملف PDF.</p>
-      </div>
-    </header>
+<div class="app-wrap">
 
-    <main class="content">
-      <section class="form-panel">
-        <h2><i class="fa-solid fa-pen-to-square"></i> معلومات السيرة الذاتية</h2>
-        <form id="cv-form">
-          <label><span class="label-arabic"><i class="fa-solid fa-user"></i> الاسم الكامل</span>
-            <span class="label-translation">Nom complet</span>
-            <input type="text" id="name" placeholder="أدخل اسمك الكامل">
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-briefcase"></i> المسمى الوظيفي</span>
-            <span class="label-translation">Intitulé du poste</span>
-            <input type="text" id="title" placeholder="مثال: مطور واجهات مستخدم">
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-language"></i> ترجمة المسمى الوظيفي</span>
-            <span class="label-translation">Traduction du titre</span>
-            <input type="text" id="title-translation" placeholder="مثال: Front-end Developer">
-            <small>أضف ترجمة المسمى الوظيفي لتظهر بجانب العنوان.</small>
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-address-card"></i> المعلومات الشخصية</span>
-            <span class="label-translation">Informations personnelles</span>
-            <textarea id="personal" rows="3" placeholder="مثال: تاريخ الميلاد، الجنسية، العنوان"></textarea>
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-camera"></i> الصورة الشخصية</span>
-            <span class="label-translation">Photo de profil</span>
-            <input type="file" id="photo" accept="image/*">
-            <small>يمكنك تحميل صورة شخصية لتظهر في السيرة الذاتية.</small>
-            <button type="button" id="photo-btn" class="photo-upload-btn"><i class="fa-solid fa-upload"></i> Choisir une
-              photo / اختر صورة</button>
-            <div id="photo-status" class="photo-status"></div>
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-file-lines"></i> ملخص عنك</span>
-            <span class="label-translation">Résumé professionnel</span>
-            <textarea id="summary" rows="4" placeholder="اكتب ملخصاً مهنياً قصيراً"></textarea>
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-graduation-cap"></i> التعليم</span>
-            <span class="label-translation">Formation</span>
-            <textarea id="education" rows="3" placeholder="الجامعة، التخصص، سنوات الدراسة"></textarea>
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-certificate"></i> الشهادات والدبلومات</span>
-            <span class="label-translation">Diplômes & certifications</span>
-            <textarea id="diplomas" rows="3" placeholder="أضف الدبلومات والشهادات التي حصلت عليها"></textarea>
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-building"></i> الخبرات العملية</span>
-            <span class="label-translation">Expériences professionnelles</span>
-            <textarea id="experience" rows="5" placeholder="اكتب الخبرات بترتيب تنازلي، كل بند في سطر جديد"></textarea>
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-star"></i> المهارات</span>
-            <span class="label-translation">Compétences</span>
-            <textarea id="skills" rows="4" placeholder="اكتب مهاراتك الرئيسية مفصولة بفواصل"></textarea>
-          </label>
-          <label><span class="label-arabic"><i class="fa-solid fa-envelope"></i> التواصل</span>
-            <span class="label-translation">Coordonnées</span>
-            <textarea id="contact" rows="3" placeholder="البريد الإلكتروني، رقم الهاتف، LinkedIn"></textarea>
-          </label>
-          <button type="button" id="print-btn" class="print-action-btn"><i class="fa-solid fa-print"></i> طباعة السيرة
-            الذاتية</button>
-        </form>
-      </section>
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">📄</div>
+      <div class="brand-text">
+        <h1>Souhoula CV Pro</h1>
+        <p>سيرة ذاتية احترافية — بسرعة وسهولة</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-ghost" id="dark-toggle">🌙 <span>الوضع المظلم</span></button>
+      <button class="btn-ghost" id="print-btn-top">🖨️ <span>طباعة</span></button>
+    </div>
+  </header>
 
-      <section class="preview-panel">
-        <h2><i class="fa-solid fa-eye"></i> معاينة السيرة الذاتية</h2>
-        <article class="cv-preview" id="cv-preview">
-          <div class="cv-top">
-            <div class="cv-image" id="cv-image">
-              <img id="cv-photo" alt="صورة شخصية" />
-              <div class="photo-placeholder"><i class="fa-solid fa-user-tie fa-3x"></i></div>
+  <!-- WORKSPACE -->
+  <div class="workspace">
+
+    <!-- FORM -->
+    <aside class="form-panel">
+      <div class="form-panel-header">
+        <div class="icon-box"><i class="fa-solid fa-pen-nib"></i></div>
+        <div>
+          <h2>بيانات السيرة الذاتية</h2>
+          <p>Remplissez les champs ci-dessous</p>
+        </div>
+      </div>
+      <div class="form-body">
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-user"></i></span>
+            <span>الاسم الكامل</span>
+            <span class="lbl-fr">— Nom complet</span>
+          </div>
+          <input type="text" id="inp-name" placeholder="أدخل اسمك الكامل">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-briefcase"></i></span>
+            <span>المسمى الوظيفي</span>
+            <span class="lbl-fr">— Titre</span>
+          </div>
+          <input type="text" id="inp-title" placeholder="مثال: مهندس برمجيات">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-language"></i></span>
+            <span>ترجمة المسمى</span>
+            <span class="lbl-fr">— Traduction</span>
+          </div>
+          <input type="text" id="inp-title-tr" placeholder="Software Engineer">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-camera"></i></span>
+            <span>الصورة الشخصية</span>
+            <span class="lbl-fr">— Photo</span>
+          </div>
+          <input type="file" id="inp-photo" accept="image/*">
+          <button type="button" class="photo-btn" id="photo-btn">
+            <i class="fa-solid fa-upload"></i> اختر صورة / Choisir une photo
+          </button>
+          <div class="photo-status" id="photo-status">✅ تم إضافة الصورة</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-address-card"></i></span>
+            <span>المعلومات الشخصية</span>
+            <span class="lbl-fr">— Infos</span>
+          </div>
+          <textarea id="inp-personal" rows="3" placeholder="تاريخ الميلاد، الجنسية، العنوان..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-file-lines"></i></span>
+            <span>الملخص المهني</span>
+            <span class="lbl-fr">— Résumé</span>
+          </div>
+          <textarea id="inp-summary" rows="4" placeholder="اكتب ملخصاً قصيراً عن نفسك..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+            <span>التعليم</span>
+            <span class="lbl-fr">— Formation</span>
+          </div>
+          <textarea id="inp-education" rows="3" placeholder="الجامعة، التخصص، السنة..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-certificate"></i></span>
+            <span>الشهادات والدبلومات</span>
+            <span class="lbl-fr">— Diplômes</span>
+          </div>
+          <textarea id="inp-diplomas" rows="3" placeholder="أضف شهاداتك وشاراتك..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-building"></i></span>
+            <span>الخبرات العملية</span>
+            <span class="lbl-fr">— Expériences</span>
+          </div>
+          <textarea id="inp-experience" rows="4" placeholder="كل خبرة في سطر جديد..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-star"></i></span>
+            <span>المهارات</span>
+            <span class="lbl-fr">— Compétences</span>
+          </div>
+          <textarea id="inp-skills" rows="3" placeholder="Python, Communication, Gestion de projet..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span class="lbl-icon"><i class="fa-solid fa-envelope"></i></span>
+            <span>التواصل</span>
+            <span class="lbl-fr">— Coordonnées</span>
+          </div>
+          <textarea id="inp-contact" rows="3" placeholder="البريد الإلكتروني، الهاتف، LinkedIn..."></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <button class="print-btn" id="print-btn">
+          <i class="fa-solid fa-print"></i> طباعة / Imprimer
+        </button>
+
+      </div>
+    </aside>
+
+    <!-- PREVIEW -->
+    <main class="preview-panel">
+      <div class="preview-label">معاينة السيرة الذاتية — Aperçu du CV</div>
+
+      <div class="cv-doc" id="cv-doc">
+        <div class="cv-inner">
+
+          <!-- CV HEAD -->
+          <div class="cv-head">
+            <div class="cv-photo-wrap" id="cv-photo-wrap">
+              <img id="cv-photo-img" alt="Photo">
+              <span class="photo-placeholder-icon"><i class="fa-solid fa-user-tie"></i></span>
             </div>
-            <div class="cv-header">
-              <h1 id="cv-name"></h1>
-              <p id="cv-title"></p>
-              <p class="cv-title-translation" id="cv-title-translation"></p>
+            <div class="cv-name-block">
+              <h1 id="cv-name">اسمك الكامل</h1>
+              <span class="cv-job-title" id="cv-title" style="display:none"></span>
+              <span class="cv-job-sub" id="cv-title-tr" style="display:none"></span>
             </div>
           </div>
-          <div class="cv-section">
-            <h3><span class="heading-arabic"><i class="fa-solid fa-address-card"></i> المعلومات الشخصية</span> <span
-                class="heading-translation">Informations personnelles</span></h3>
-            <p id="cv-personal"></p>
+
+          <!-- CV SECTIONS -->
+          <div class="cv-sections">
+
+            <div class="cv-section" id="sec-personal">
+              <div class="cv-sec-head">
+                <div class="cv-sec-icon"><i class="fa-solid fa-address-card"></i></div>
+                <div class="cv-sec-title">
+                  المعلومات الشخصية
+                  <span class="sec-fr">— Informations personnelles</span>
+                </div>
+                <div class="cv-sec-line"></div>
+              </div>
+              <div class="cv-sec-body" id="cv-personal"></div>
+            </div>
+
+            <div class="cv-section" id="sec-summary">
+              <div class="cv-sec-head">
+                <div class="cv-sec-icon"><i class="fa-solid fa-file-lines"></i></div>
+                <div class="cv-sec-title">
+                  الملخص المهني
+                  <span class="sec-fr">— Résumé professionnel</span>
+                </div>
+                <div class="cv-sec-line"></div>
+              </div>
+              <div class="cv-sec-body" id="cv-summary"></div>
+            </div>
+
+            <div class="cv-section" id="sec-education">
+              <div class="cv-sec-head">
+                <div class="cv-sec-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="cv-sec-title">
+                  التعليم
+                  <span class="sec-fr">— Formation</span>
+                </div>
+                <div class="cv-sec-line"></div>
+              </div>
+              <div class="cv-sec-body" id="cv-education"></div>
+            </div>
+
+            <div class="cv-section" id="sec-diplomas">
+              <div class="cv-sec-head">
+                <div class="cv-sec-icon"><i class="fa-solid fa-certificate"></i></div>
+                <div class="cv-sec-title">
+                  الشهادات والدبلومات
+                  <span class="sec-fr">— Diplômes & certifications</span>
+                </div>
+                <div class="cv-sec-line"></div>
+              </div>
+              <div class="cv-sec-body" id="cv-diplomas"></div>
+            </div>
+
+            <div class="cv-section" id="sec-experience">
+              <div class="cv-sec-head">
+                <div class="cv-sec-icon"><i class="fa-solid fa-building"></i></div>
+                <div class="cv-sec-title">
+                  الخبرات العملية
+                  <span class="sec-fr">— Expériences professionnelles</span>
+                </div>
+                <div class="cv-sec-line"></div>
+              </div>
+              <div class="cv-sec-body" id="cv-experience"></div>
+            </div>
+
+            <div class="cv-section" id="sec-skills">
+              <div class="cv-sec-head">
+                <div class="cv-sec-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="cv-sec-title">
+                  المهارات
+                  <span class="sec-fr">— Compétences</span>
+                </div>
+                <div class="cv-sec-line"></div>
+              </div>
+              <div class="cv-sec-body" id="cv-skills"></div>
+            </div>
+
+            <div class="cv-section" id="sec-contact">
+              <div class="cv-sec-head">
+                <div class="cv-sec-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="cv-sec-title">
+                  التواصل
+                  <span class="sec-fr">— Coordonnées</span>
+                </div>
+                <div class="cv-sec-line"></div>
+              </div>
+              <div class="cv-sec-body" id="cv-contact"></div>
+            </div>
+
           </div>
-          <div class="cv-section">
-            <h3><span class="heading-arabic"><i class="fa-solid fa-file-lines"></i> الملخص</span> <span
-                class="heading-translation">Résumé professionnel</span></h3>
-            <p id="cv-summary"></p>
-          </div>
-          <div class="cv-section">
-            <h3><span class="heading-arabic"><i class="fa-solid fa-graduation-cap"></i> التعليم</span> <span
-                class="heading-translation">Formation</span></h3>
-            <p id="cv-education"></p>
-          </div>
-          <div class="cv-section">
-            <h3><span class="heading-arabic"><i class="fa-solid fa-certificate"></i> الشهادات والدبلومات</span> <span
-                class="heading-translation">Diplômes et certifications</span></h3>
-            <p id="cv-diplomas"></p>
-          </div>
-          <div class="cv-section">
-            <h3><span class="heading-arabic"><i class="fa-solid fa-building"></i> الخبرات العملية</span> <span
-                class="heading-translation">Expériences professionnelles</span></h3>
-            <p id="cv-experience"></p>
-          </div>
-          <div class="cv-section">
-            <h3><span class="heading-arabic"><i class="fa-solid fa-star"></i> المهارات</span> <span
-                class="heading-translation">Compétences</span></h3>
-            <p id="cv-skills"></p>
-          </div>
-          <div class="cv-section">
-            <h3><span class="heading-arabic"><i class="fa-solid fa-envelope"></i> التواصل</span> <span
-                class="heading-translation">Coordonnées</span></h3>
-            <p id="cv-contact"></p>
-          </div>
-        </article>
-      </section>
+        </div>
+      </div>
     </main>
   </div>
+
+
 
   <footer class="glass-footer">
     <div class="footer-content">
