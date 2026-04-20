@@ -563,7 +563,7 @@
         font-size: 9pt;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-        color-adjust: exact;
+        /* color-adjust: exact; */
       }
 
       body::before { display: none !important; }
