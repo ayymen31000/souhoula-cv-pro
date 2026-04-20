@@ -137,4 +137,50 @@ function updateDarkModeButton() {
   }
 }
 
+function handlePrintScale() {
+  const preview = document.getElementById('cv-preview');
+  if (!preview) return;
+
+  // Réinitialiser l'échelle
+  preview.style.transform = 'none';
+  preview.style.marginBottom = '0';
+  preview.style.transformOrigin = 'top center';
+
+  // Forcer format A4 pour calculer la hauteur exacte
+  const origWidth = preview.style.width;
+  const origPosition = preview.style.position;
+  const origMaxW = preview.style.maxWidth;
+
+  preview.style.width = '210mm';
+  preview.style.maxWidth = '210mm';
+  preview.style.position = 'absolute';
+
+  // ~1123px est la hauteur d'un A4 à 96 DPI, on utilise 1050px pour assurer les marges d'impression du navigateur
+  const maxA4HeightPx = 1050; 
+  const currentHeight = preview.offsetHeight;
+
+  // Transformer avec scale si c'est plus grand
+  if (currentHeight > maxA4HeightPx) {
+    const scale = maxA4HeightPx / currentHeight;
+    preview.style.transform = `scale(${scale})`;
+    // Soustraire la hauteur physique résultante libérée pour éviter des pages blanches inutiles
+    preview.style.marginBottom = `-${currentHeight * (1 - scale)}px`;
+  }
+
+  // Restaurer propriétés
+  preview.style.width = origWidth;
+  preview.style.maxWidth = origMaxW;
+  preview.style.position = origPosition;
+}
+
+function resetPrintScale() {
+  const preview = document.getElementById('cv-preview');
+  if (!preview) return;
+  preview.style.transform = 'none';
+  preview.style.marginBottom = '0';
+}
+
+window.addEventListener('beforeprint', handlePrintScale);
+window.addEventListener('afterprint', resetPrintScale);
+
 document.addEventListener('DOMContentLoaded', initForm);

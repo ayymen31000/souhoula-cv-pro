@@ -461,24 +461,23 @@ button i {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 8mm;
-    margin-top: 0mm;
-    margin-bottom: 0mm;
+    margin: 0;
   }
-
 
   html,
   body {
     width: 210mm !important;
     min-width: 210mm !important;
     max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
     background: #ffffff !important;
     margin: 0 auto !important;
     padding: 0 !important;
     color: #102a43;
-    min-height: auto;
     font-size: 10pt;
     font-family: Arial, Helvetica, sans-serif !important;
+    overflow: hidden !important;
   }
 
   .container,
@@ -518,13 +517,14 @@ button i {
     border: 1px solid #102a43 !important;
     box-shadow: none !important;
     background: #ffffff !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 auto !important;
     box-sizing: border-box !important;
     height: auto !important;
-    overflow: visible !important;
-    page-break-after: auto !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .cv-top {
